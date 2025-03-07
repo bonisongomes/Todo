@@ -22,23 +22,19 @@ public class TodoController {
 
     @GetMapping
     public List<Todo> getTodos(@RequestHeader("Authorization") String token){
-        String username = jwtUtil.extractUsername(token);
+        String username = jwtUtil.extractUsername(token.substring(7));
         return todoService.getAllToDoForUser(username);
     }
 
     @PostMapping
     public ResponseEntity<Todo> createTodo(@RequestHeader("Authorization") String token, @RequestBody Todo todo){
-        System.out.println("Inside create Todo");
         String username = jwtUtil.extractUsername(token.substring(7));
-        System.out.println("Extracted username inside createTodo : " + username);
         return ResponseEntity.ok(todoService.createTodo(username,todo));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTodo(@PathVariable long id){
-        System.out.println("Inside delete ");
         todoService.deleteTodo(id);
-        System.out.println(" delete done");
         return ResponseEntity.ok().build();
     }
 }

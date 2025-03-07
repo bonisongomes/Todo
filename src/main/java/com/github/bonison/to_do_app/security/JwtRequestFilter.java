@@ -36,10 +36,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);
-            System.out.println("jwt : " + jwt);
             try {
                 username = jwtUtil.extractUsername(jwt); // ✅ Extract username from JWT
-                System.out.println(" Extracted username: " + username);
             } catch (ExpiredJwtException e) {
                 System.out.println(" JWT Token has expired");
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT Token has expired");
@@ -74,7 +72,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         System.out.println("🔹 Request Passed Through Filter");
         try {
-            System.out.println("Next filter in chain: " + chain.getClass().getName());
             chain.doFilter(request, response);
             System.out.println("Request Passed Successfully Through Filter");
         } catch (Exception e) {

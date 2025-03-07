@@ -10,6 +10,7 @@ import java.util.Optional;
 @Table(name = "todos")
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class Todo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
