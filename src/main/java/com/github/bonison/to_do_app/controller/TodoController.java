@@ -33,8 +33,9 @@ public class TodoController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteTodo(@PathVariable long id){
-        todoService.deleteTodo(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> deleteTodo(@RequestHeader("Authorization") String token, @PathVariable long id){
+        String username = jwtUtil.extractUsername(token.substring(7));
+        String result = todoService.deleteTodo(id,username);
+        return ResponseEntity.ok().body(result);
     }
 }

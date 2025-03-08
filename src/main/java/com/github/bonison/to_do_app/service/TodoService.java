@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -27,7 +28,15 @@ public class TodoService {
         todo.setUser(user);
         return todoRepository.save(todo);
     }
-    public void deleteTodo(long id){
-        todoRepository.deleteById(id);
+    public String deleteTodo(long id,String username){
+        Optional<Todo> todo = todoRepository.findById(id);
+        if(todo.isPresent()){
+            Todo todo1 = todo.get();
+            if (todo1.getUser().getUsername().equals(username)){
+                todoRepository.delete(todo1);
+                return "Todo deleted successfully";
+            }
+        }
+        return "Todo for given Id is not present or you are not allowed to delete this Todo";
     }
 }
