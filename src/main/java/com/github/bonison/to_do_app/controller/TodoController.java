@@ -38,4 +38,12 @@ public class TodoController {
         String result = todoService.deleteTodo(id,username);
         return ResponseEntity.ok().body(result);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateTodo(@RequestHeader("Authorization") String token , @PathVariable long id ,
+                                           @RequestBody Todo updatedTodo){
+        String username = jwtUtil.extractUsername(token.substring(7));
+        String result = todoService.updateTodo(username, id , updatedTodo);
+        return ResponseEntity.ok().body(result);
+    }
 }

@@ -4,6 +4,7 @@ import com.github.bonison.to_do_app.model.Todo;
 import com.github.bonison.to_do_app.model.User;
 import com.github.bonison.to_do_app.repository.TodoRepository;
 import com.github.bonison.to_do_app.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,5 +39,21 @@ public class TodoService {
             }
         }
         return "Todo for given Id is not present or you are not allowed to delete this Todo";
+    }
+
+    @Transactional
+    public String updateTodo(String username, long id , Todo updatedTodo){
+        Optional<Todo> optionalTodo = todoRepository.findById(id);
+        if(optionalTodo.isPresent()){
+            Todo extracted_todo = optionalTodo.get();
+            if (extracted_todo.getUser().getUsername().equals(username)){
+                extracted_todo.setTitle(updatedTodo.getTitle());
+                extracted_todo.setDescription(updatedTodo.getDescription());
+                extracted_todo.setCompleted(updatedTodo.isCompleted());
+                todoRepository.save(extracted_todo);
+                return "Todo updated successfully";
+            }
+        }
+        return "Todo update failed";
     }
 }
