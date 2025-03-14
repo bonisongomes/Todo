@@ -29,20 +29,20 @@ public class TodoService {
         todo.setUser(user);
         return todoRepository.save(todo);
     }
-    public String deleteTodo(long id,String username){
+    public boolean deleteTodo(long id,String username){
         Optional<Todo> todo = todoRepository.findById(id);
         if(todo.isPresent()){
             Todo todo1 = todo.get();
             if (todo1.getUser().getUsername().equals(username)){
                 todoRepository.delete(todo1);
-                return "Todo deleted successfully";
+                return true;
             }
         }
-        return "Todo for given Id is not present or you are not allowed to delete this Todo";
+        return false;
     }
 
     @Transactional
-    public String updateTodo(String username, long id , Todo updatedTodo){
+    public boolean updateTodo(String username, long id , Todo updatedTodo){
         Optional<Todo> optionalTodo = todoRepository.findById(id);
         if(optionalTodo.isPresent()){
             Todo extracted_todo = optionalTodo.get();
@@ -51,9 +51,9 @@ public class TodoService {
                 extracted_todo.setDescription(updatedTodo.getDescription());
                 extracted_todo.setCompleted(updatedTodo.isCompleted());
                 todoRepository.save(extracted_todo);
-                return "Todo updated successfully";
+                return true;
             }
         }
-        return "Todo update failed";
+        return false;
     }
 }
