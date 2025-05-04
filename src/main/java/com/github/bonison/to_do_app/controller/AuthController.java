@@ -2,7 +2,9 @@ package com.github.bonison.to_do_app.controller;
 
 import com.github.bonison.to_do_app.config.JwtUtil;
 import com.github.bonison.to_do_app.model.User;
+import com.github.bonison.to_do_app.model.WeatherResponse;
 import com.github.bonison.to_do_app.service.UserService;
+import com.github.bonison.to_do_app.service.WeatherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,6 +31,9 @@ public class AuthController {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private WeatherService weatherService;
+
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody User user) {
         userService.registerUser(user.getUsername(), user.getPassword() , user.getEmail());
@@ -42,5 +47,17 @@ public class AuthController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String token = jwtUtil.generateToken(userDetails.getUsername());
         return "Bearer " + token;
+    }
+
+    @GetMapping("/weather")
+    public String getWeather(@RequestParam String city){
+        String feelsLike ="";
+        String humidity = "";
+        WeatherResponse weatherResp = weatherService.getWeather(city);
+        if(weatherResp != null){
+            feelsLike = weatherResp.getCurrent().getFeelsLike();
+            humidity = weatherResp.getCurrent().getHumidity();
+        }
+        return "Weather for city " + city + " feels like " + feelsLike + " and humidity is " + humidity;
     }
 }
